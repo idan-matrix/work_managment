@@ -1,25 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Container, Grid } from "@mui/material";
+import { DndProvider } from "react-dnd";
+import { Projects } from "./Projects";
+import { Scheduler } from "./Scheduler";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <DndProvider backend={HTML5Backend}>
+        <Grid container>
+          <Grid item xs={2}>
+            <Projects />
+          </Grid>
+          <Grid item xs={10}>
+            <Scheduler />
+          </Grid>
+        </Grid>
+      </DndProvider>
+    </Container>
   );
 }
 
