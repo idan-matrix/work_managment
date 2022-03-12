@@ -61,10 +61,15 @@ export const SchedulerProvider: FC<ISchedulerProvider> = (props) => {
     initTasks();
   }, []);
 
-  const addEmployee = (employee: IEmployee) => {
-    const cloneEmployee = [...employees];
-    cloneEmployee.push(employee);
-    setEmployees(cloneEmployee);
+  const addEmployee = async (employee: IEmployee) => {
+    const { data, error } = await supabase
+      .from<IEmployee>("Employees")
+      .insert(employee);
+    if (!error) {
+      const cloneEmployee = [...employees];
+      cloneEmployee.push(employee);
+      setEmployees(cloneEmployee);
+    }
   };
 
   const removeEmployee = (removeEmployee: IEmployee) => {
