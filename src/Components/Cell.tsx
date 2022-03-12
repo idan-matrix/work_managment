@@ -1,5 +1,5 @@
-import { Grid } from "@mui/material";
-import { FC, useContext, useEffect, useState } from "react";
+import { Grid, Typography } from "@mui/material";
+import { FC, useContext } from "react";
 import { useDrop } from "react-dnd";
 import { TYPES } from "../Types";
 import { SchedulerContext } from "./SchedulerContext";
@@ -31,7 +31,7 @@ export const Cell: FC<ICell> = (props) => {
     if (task) {
       return task.name;
     }
-    return "No task";
+    return "";
   };
 
   return (
@@ -46,7 +46,21 @@ export const Cell: FC<ICell> = (props) => {
         minHeight: "100px",
       }}
     >
-      {getCellData()}
+      <Typography sx={{ fontWeight: "bold" }}>{getCellData()}</Typography>
+      {getCellData() && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            height: "100%",
+            width: "100%",
+            zIndex: 1,
+            opacity: 0.5,
+            backgroundColor: "green",
+          }}
+        />
+      )}
       {isOver && (
         <div
           style={{

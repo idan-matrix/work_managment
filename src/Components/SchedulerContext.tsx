@@ -77,12 +77,15 @@ export const SchedulerProvider: FC<ISchedulerProvider> = (props) => {
     cloneEmployee.filter((employee) => employee.name !== removeEmployee.name);
     setEmployees(cloneEmployee);
   };
-  const addTask = (task: ITask) => {
-    setTasks((prevTasks) => {
-      const clonePrevTasks = [...prevTasks];
-      clonePrevTasks.push(task);
-      return clonePrevTasks;
-    });
+  const addTask = async (task: ITask) => {
+    const { data, error } = await supabase.from<ITask>("Tasks").insert(task);
+    if (!error) {
+      setTasks((prevTasks) => {
+        const clonePrevTasks = [...prevTasks];
+        clonePrevTasks.push(task);
+        return clonePrevTasks;
+      });
+    }
   };
 
   const removeTask = (removeTask: ITask) => {

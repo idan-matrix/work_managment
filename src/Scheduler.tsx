@@ -1,9 +1,9 @@
-import { Button, Grid } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { Avatar, AvatarGroup, Button, Grid } from "@mui/material";
+import { useContext } from "react";
 import { BusinessDays, EmployeesComponent, SchedulerContext } from "Components";
 
 export const Scheduler = () => {
-  const { weekType, setWeekType } = useContext(SchedulerContext);
+  const { weekType, setWeekType, employees } = useContext(SchedulerContext);
   const weekStateHandler = () => {
     if (weekType === "curr") {
       setWeekType("next");
@@ -18,10 +18,17 @@ export const Scheduler = () => {
         width: "100%",
       }}
     >
-      <Button onClick={weekStateHandler} variant="contained">
-        {weekType === "curr" ? "next week" : "curr week"}
-      </Button>
-
+      <Grid container>
+        <Button onClick={weekStateHandler} variant="contained">
+          {weekType === "curr" ? "next week" : "curr week"}
+        </Button>
+        <AvatarGroup max={4} total={employees.length}>
+          {employees.map((employee) => (
+            <Avatar alt={employee.name}>{employee.name[0]}</Avatar>
+          ))}
+        </AvatarGroup>
+        <Button variant="contained">Add employee</Button>
+      </Grid>
       <BusinessDays />
       <EmployeesComponent />
     </div>
