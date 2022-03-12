@@ -4,7 +4,7 @@ import { Project } from "./Project";
 
 export const Projects = () => {
   const [search, setSearch] = useState<string>("");
-  const arr = [
+  const projects = [
     "asd1",
     "asd2",
     "asd3",
@@ -37,7 +37,7 @@ export const Projects = () => {
           margin: "0 8px",
         }}
       >
-        {arr
+        {projects
           .filter((data) => data.includes(search))
           .map((data, index) => (
             <Project key={index} label={data} />

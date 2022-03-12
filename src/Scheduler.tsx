@@ -1,17 +1,7 @@
 import { Button, Grid } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { getWeekDays, WeekType } from "Utils";
 import { BusinessDays, EmployeesComponent, SchedulerContext } from "Components";
 
-export interface IEmployee {
-  name: string;
-}
-
-export interface ITask {
-  name: string;
-  date: string;
-  employee: string;
-}
 export const Scheduler = () => {
   const { weekType, setWeekType } = useContext(SchedulerContext);
   const weekStateHandler = () => {
@@ -21,6 +11,7 @@ export const Scheduler = () => {
       setWeekType("curr");
     }
   };
+
   return (
     <div
       style={{

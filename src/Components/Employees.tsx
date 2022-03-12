@@ -5,10 +5,10 @@ import { Cell } from "./Cell";
 import { SchedulerContext } from "./SchedulerContext";
 
 export const EmployeesComponent = () => {
-  const { employees, tasks, weekDays } = useContext(SchedulerContext);
+  const { employees, weekDays } = useContext(SchedulerContext);
   return (
     <>
-      {employees.map((data, index) => (
+      {employees.map((employee, index) => (
         <Grid container key={index}>
           <Grid
             xs={2}
@@ -17,15 +17,12 @@ export const EmployeesComponent = () => {
             justifyContent="center"
             alignItems="center"
           >
-            <Typography sx={{ fontWeight: "bold" }}>{data.name}</Typography>
+            <Typography sx={{ fontWeight: "bold" }}>{employee.name}</Typography>
           </Grid>
 
           {weekDays.map((date) => (
             <Grid key={dateId(date)} xs={2}>
-              <Cell
-                dateId={dateId(date)}
-                label={tasks.find((task) => dateId(date) === task.date)?.name}
-              />
+              <Cell employeeName={employee.name} dateId={dateId(date)} />
             </Grid>
           ))}
         </Grid>

@@ -1,26 +1,38 @@
 import { Grid } from "@mui/material";
-import { FC, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { useDrop } from "react-dnd";
 import { TYPES } from "../Types";
+import { SchedulerContext } from "./SchedulerContext";
 interface ICell {
   dateId: string;
-  label?: string;
+  employeeName: string;
 }
 export const Cell: FC<ICell> = (props) => {
-  const [cell, setCell] = useState("");
+  const { addTask, tasks } = useContext(SchedulerContext);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: TYPES.TASK,
     drop: (item: { label: string }, monitor) => {
-      setCell(item.label);
+      addTask({
+        date: props.dateId,
+        employee: props.employeeName,
+        name: item.label,
+      });
     },
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
   }));
 
-  useEffect(() => {
-    setCell(props.label || "");
-  }, [props.label]);
+  const getCellData = () => {
+    const task = tasks.find(
+      (task) =>
+        props.dateId === task.date && task.employee === props.employeeName
+    );
+    if (task) {
+      return task.name;
+    }
+    return "No task";
+  };
 
   return (
     <Grid
@@ -34,8 +46,7 @@ export const Cell: FC<ICell> = (props) => {
         minHeight: "100px",
       }}
     >
-      {props.children}
-      {cell}
+      {getCellData()}
       {isOver && (
         <div
           style={{

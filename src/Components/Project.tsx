@@ -1,6 +1,6 @@
 import { Grid, Paper, Typography } from "@mui/material";
 import { useDrag } from "react-dnd";
-import { TYPES } from "./Types";
+import { TYPES } from "../Types";
 
 export const Project = (props: { label: string }) => {
   const [{ isDragging }, drag] = useDrag(() => ({

@@ -1,5 +1,5 @@
+import { IEmployee, ITask, supabase } from "Api";
 import { createContext, FC, useEffect, useState } from "react";
-import { IEmployee, ITask } from "Scheduler";
 import { getWeekDays, WeekType } from "Utils";
 
 interface ISchedulerContext {
@@ -26,8 +26,6 @@ export const SchedulerContext = createContext<ISchedulerContext>({
 });
 
 interface ISchedulerProvider {
-  tasks: ITask[];
-  employees: IEmployee[];
   weekType: WeekType;
 }
 export const SchedulerProvider: FC<ISchedulerProvider> = (props) => {
@@ -42,10 +40,26 @@ export const SchedulerProvider: FC<ISchedulerProvider> = (props) => {
   useEffect(() => {
     initDays();
   }, [weekType, props.weekType]);
+  const initEmployees = async () => {
+    const { data: Employees, error } = await supabase
+      .from<IEmployee>("Employees")
+      .select("*");
+    if (!error) {
+      setEmployees(Employees);
+    }
+  };
+  const initTasks = async () => {
+    const { data: Tasks, error } = await supabase
+      .from<ITask>("Tasks")
+      .select("*");
+    if (!error) {
+      setTasks(Tasks);
+    }
+  };
   useEffect(() => {
-    setEmployees(props.employees);
-    setTasks(props.tasks);
-  }, [props.employees, props.tasks]);
+    initEmployees();
+    initTasks();
+  }, []);
 
   const addEmployee = (employee: IEmployee) => {
     const cloneEmployee = [...employees];
@@ -59,9 +73,11 @@ export const SchedulerProvider: FC<ISchedulerProvider> = (props) => {
     setEmployees(cloneEmployee);
   };
   const addTask = (task: ITask) => {
-    const cloneTasks = [...tasks];
-    cloneTasks.push(task);
-    setTasks(cloneTasks);
+    setTasks((prevTasks) => {
+      const clonePrevTasks = [...prevTasks];
+      clonePrevTasks.push(task);
+      return clonePrevTasks;
+    });
   };
 
   const removeTask = (removeTask: ITask) => {
