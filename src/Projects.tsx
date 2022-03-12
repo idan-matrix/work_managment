@@ -30,7 +30,12 @@ export const Projects = () => {
 
       <Stack
         spacing={1}
-        sx={{ width: "100%", maxHeight: "90vh", overflowY: "scroll" }}
+        sx={{
+          width: "100%",
+          maxHeight: "90vh",
+          overflowY: "scroll",
+          margin: "0 8px",
+        }}
       >
         {arr
           .filter((data) => data.includes(search))

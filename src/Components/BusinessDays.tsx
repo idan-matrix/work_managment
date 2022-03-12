@@ -1,10 +1,10 @@
 import { Grid, Typography } from "@mui/material";
 import { format } from "date-fns";
+import { useContext } from "react";
+import { SchedulerContext } from "./SchedulerContext";
 
-interface IBusinessDays {
-  weekDays: Date[];
-}
-export const BusinessDays = ({ weekDays }: IBusinessDays) => {
+export const BusinessDays = () => {
+  const { weekDays } = useContext(SchedulerContext);
   return (
     <Grid container>
       <Grid item xs={2}></Grid>

@@ -11,15 +11,18 @@ export const Project = (props: { label: string }) => {
     collect: (monitor) => ({ isDragging: !!monitor.isDragging }),
   }));
   return (
-    <Paper ref={drag} sx={{ minWidth: "90px", minHeight: "90px" }}>
-      <Grid
-        sx={{ height: "100%" }}
-        container
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Typography>{props.label}</Typography>
-      </Grid>
+    <Paper
+      elevation={5}
+      ref={drag}
+      sx={{
+        minWidth: "90px",
+        minHeight: "90px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Typography>{props.label}</Typography>
     </Paper>
   );
 };
