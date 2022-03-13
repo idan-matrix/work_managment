@@ -2,21 +2,45 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  Grid,
   IconButton,
   List,
   ListItem,
   ListItemText,
+  TextField,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { SchedulerContext } from "Components/SchedulerContext";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 interface ISettingsDialog {
   isOpen: boolean;
   handleClose: () => void;
 }
 export const SettingsDialog = (props: ISettingsDialog) => {
-  const { employees, removeEmployee } = useContext(SchedulerContext);
+  const [employeesName, setEmployeesName] = useState<string>("");
+  const onChangeHandler = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setEmployeesName(e.target.value);
+  };
+
+  const { employees, removeEmployee, addEmployee } =
+    useContext(SchedulerContext);
+
+  const addEmployeeHandler = async () => {
+    await addEmployee({
+      name: employeesName,
+    });
+    setEmployeesName("");
+  };
+
+  const pressingEnter = async (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.code === "Enter") {
+      addEmployeeHandler();
+    }
+  };
   return (
     <Dialog
       maxWidth="sm"
@@ -25,6 +49,7 @@ export const SettingsDialog = (props: ISettingsDialog) => {
       onClose={props.handleClose}
     >
       <DialogTitle>
+        Settings
         <IconButton
           aria-label="close"
           onClick={props.handleClose}
@@ -39,6 +64,18 @@ export const SettingsDialog = (props: ISettingsDialog) => {
         </IconButton>
       </DialogTitle>
       <DialogContent>
+        <Grid mt={2} container alignItems="center">
+          <TextField
+            onKeyPress={pressingEnter}
+            label="Add employee"
+            placeholder="employee's name"
+            onChange={onChangeHandler}
+            value={employeesName}
+          />
+          <IconButton onClick={addEmployeeHandler}>
+            <AddIcon />
+          </IconButton>
+        </Grid>
         <List>
           {employees.map((employee, index) => (
             <ListItem

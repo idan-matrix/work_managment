@@ -4,12 +4,10 @@ import {
   BusinessDays,
   EmployeesComponent,
   SchedulerContext,
-  AddEmployee,
   SettingsDialog,
 } from "Components";
 import SettingsIcon from "@mui/icons-material/Settings";
 export const Scheduler = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [settingsDialog, setSettingsDialog] = useState<boolean>(false);
   const { weekType, setWeekType, employees } = useContext(SchedulerContext);
   const weekStateHandler = () => {
@@ -19,12 +17,7 @@ export const Scheduler = () => {
       setWeekType("curr");
     }
   };
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
+
   const handleSettingsClose = () => {
     setSettingsDialog(false);
   };
@@ -38,7 +31,6 @@ export const Scheduler = () => {
         width: "100%",
       }}
     >
-      <AddEmployee isOpen={isOpen} handleClose={handleClose} />
       <SettingsDialog
         isOpen={settingsDialog}
         handleClose={handleSettingsClose}
@@ -50,9 +42,6 @@ export const Scheduler = () => {
         <IconButton onClick={openSettingsDialog}>
           <SettingsIcon />
         </IconButton>
-        <Button onClick={handleOpen} variant="contained">
-          Add employee
-        </Button>
       </Grid>
       <BusinessDays />
       <EmployeesComponent />
