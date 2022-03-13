@@ -1,4 +1,5 @@
 import { Grid, Typography } from "@mui/material";
+import { supabase } from "Api";
 import { FC, useContext } from "react";
 import { useDrop } from "react-dnd";
 import { TYPES } from "../Types";
@@ -8,7 +9,7 @@ interface ICell {
   employeeName: string;
 }
 export const Cell: FC<ICell> = (props) => {
-  const { addTask, tasks } = useContext(SchedulerContext);
+  const { addTask, tasks, removeTask } = useContext(SchedulerContext);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: TYPES.TASK,
     drop: (item: { label: string }, monitor) => {
@@ -33,9 +34,18 @@ export const Cell: FC<ICell> = (props) => {
     }
     return "";
   };
-
+  const deleteHandler = async () => {
+    const task = tasks.find(
+      (task) =>
+        props.dateId === task.date && task.employee === props.employeeName
+    );
+    if (task) {
+      await removeTask(task);
+    }
+  };
   return (
     <Grid
+      onClick={deleteHandler}
       ref={drop}
       container
       justifyContent="center"

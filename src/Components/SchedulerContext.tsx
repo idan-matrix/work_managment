@@ -10,7 +10,7 @@ interface ISchedulerContext {
   setWeekType: (type: WeekType) => void;
   addEmployee: (employee: IEmployee) => void;
   removeEmployee: (employee: IEmployee) => void;
-  addTask: (task: ITask) => void;
+  addTask: (task: Omit<ITask, "id">) => void;
   removeTask: (task: ITask) => void;
 }
 export const SchedulerContext = createContext<ISchedulerContext>({
@@ -77,21 +77,30 @@ export const SchedulerProvider: FC<ISchedulerProvider> = (props) => {
     cloneEmployee.filter((employee) => employee.name !== removeEmployee.name);
     setEmployees(cloneEmployee);
   };
-  const addTask = async (task: ITask) => {
+  const addTask = async (task: Omit<ITask, "id">) => {
     const { data, error } = await supabase.from<ITask>("Tasks").insert(task);
     if (!error) {
       setTasks((prevTasks) => {
         const clonePrevTasks = [...prevTasks];
-        clonePrevTasks.push(task);
+        clonePrevTasks.push(data[0]);
         return clonePrevTasks;
       });
     }
   };
 
-  const removeTask = (removeTask: ITask) => {
-    const cloneTasks = [...tasks];
-    cloneTasks.filter((task) => task.date !== removeTask.date);
-    setTasks(cloneTasks);
+  const removeTask = async (removeTask: ITask) => {
+    const { data, error } = await supabase
+      .from("Tasks")
+      .delete()
+      .eq("id", removeTask.id);
+    if (!error) {
+      setTasks((prevTasks) => {
+        const clonePrevTasks = [...prevTasks];
+        return clonePrevTasks.filter(
+          (prevTask) => prevTask.id !== removeTask.id
+        );
+      });
+    }
   };
 
   return (
