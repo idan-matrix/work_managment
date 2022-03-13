@@ -1,50 +1,73 @@
 import { Button, Stack, TextField } from "@mui/material";
 import { supabase } from "Api";
 import { useEffect, useState } from "react";
-import AddProject from "./AddProject";
 import { Project } from "./Project";
 export interface IProject {
+  id: number;
   name: string;
 }
 export const Projects = () => {
   const [search, setSearch] = useState<string>("");
   const [projects, setProjects] = useState<IProject[]>([]);
-  const [open, setOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const onChangeHandler = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setSearch(e.target.value);
   };
   const initProjects = async () => {
+    setLoading(true);
     const { data, error } = await supabase
       .from<IProject>("Projects")
       .select("*");
     if (!error) {
       setProjects(data);
     }
-  };
-  const handleClose = () => {
-    setOpen(false);
+    setLoading(false);
   };
 
-  const openDialog = () => {
-    setOpen(true);
-  };
   useEffect(() => {
     initProjects();
   }, []);
+
+  const renderProjects = () => {
+    return projects
+      .filter((project) =>
+        project.name.toLowerCase().includes(search.toLowerCase())
+      )
+      .map((project, index) => <Project key={index} label={project.name} />);
+  };
+  const addProject = async () => {
+    const { data, error } = await supabase.from<IProject>("Projects").insert({
+      name: search,
+    });
+    if (!error) {
+      setProjects((prevProjects) => {
+        const clonePrevProjects = [...prevProjects];
+        clonePrevProjects.push(data[0]);
+        return clonePrevProjects;
+      });
+    }
+  };
+  const renderedProjects = renderProjects();
+
+  const pressingEnter = async (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.code === "Enter") {
+      if (!renderedProjects.length && search) {
+        await addProject();
+      }
+    }
+  };
   return (
     <>
-      <AddProject handleClose={handleClose} isOpen={open} />
       <TextField
         onChange={onChangeHandler}
         label="search"
+        onKeyPress={pressingEnter}
         sx={{ position: "sticky" }}
       />
-      <Button variant="contained" onClick={openDialog}>
-        Add project
-      </Button>
       <Stack
+        alignItems="center"
         spacing={1}
         sx={{
           width: "100%",
@@ -53,11 +76,11 @@ export const Projects = () => {
           margin: "0 8px",
         }}
       >
-        {projects
-          .filter((project) => project.name.includes(search))
-          .map((project, index) => (
-            <Project key={index} label={project.name} />
-          ))}
+        {renderedProjects.length ? (
+          renderedProjects
+        ) : (
+          <Button onClick={addProject}>Add project</Button>
+        )}
       </Stack>
     </>
   );

@@ -12,14 +12,14 @@ export const Project = (props: { label: string }) => {
   }));
   return (
     <Paper
-      elevation={5}
       ref={drag}
       sx={{
-        minWidth: "90px",
-        minHeight: "90px",
+        width: "70px",
+        minHeight: "70px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        cursor: "pointer",
       }}
     >
       <Typography>{props.label}</Typography>
