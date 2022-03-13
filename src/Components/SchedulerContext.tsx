@@ -12,7 +12,10 @@ interface ISchedulerContext {
   removeEmployee: (employee: IEmployee) => void;
   addTask: (task: Omit<ITask, "id">) => void;
   removeTask: (task: ITask) => void;
-  loading: boolean;
+  addEmployeeLoading: boolean;
+  removeEmployeeLoading: boolean;
+  addTaskLoading: boolean;
+  removeTaskLoading: boolean;
 }
 export const SchedulerContext = createContext<ISchedulerContext>({
   employees: [],
@@ -24,7 +27,10 @@ export const SchedulerContext = createContext<ISchedulerContext>({
   addTask: () => {},
   removeEmployee: () => {},
   removeTask: () => {},
-  loading: false,
+  addEmployeeLoading: false,
+  removeEmployeeLoading: false,
+  addTaskLoading: false,
+  removeTaskLoading: false,
 });
 
 interface ISchedulerProvider {
@@ -35,7 +41,11 @@ export const SchedulerProvider: FC<ISchedulerProvider> = (props) => {
   const [weekType, setWeekType] = useState<WeekType>(props.weekType || "curr");
   const [employees, setEmployees] = useState<IEmployee[]>([]);
   const [tasks, setTasks] = useState<ITask[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [addEmployeeLoading, setAddEmployeeLoading] = useState<boolean>(false);
+  const [removeEmployeeLoading, setRemoveEmployeeLoading] =
+    useState<boolean>(false);
+  const [addTaskLoading, setAddTaskLoading] = useState<boolean>(false);
+  const [removeTaskLoading, setRemoveTaskLoading] = useState<boolean>(false);
   const initDays = () => {
     const businessDays = getWeekDays(weekType);
     setWeekDays(businessDays);
@@ -65,7 +75,7 @@ export const SchedulerProvider: FC<ISchedulerProvider> = (props) => {
   }, []);
 
   const addEmployee = async (employee: Omit<IEmployee, "id">) => {
-    setLoading(true);
+    setAddEmployeeLoading(true);
     const { data, error } = await supabase
       .from<IEmployee>("Employees")
       .insert(employee);
@@ -74,11 +84,11 @@ export const SchedulerProvider: FC<ISchedulerProvider> = (props) => {
       cloneEmployee.push(data[0]);
       setEmployees(cloneEmployee);
     }
-    setLoading(false);
+    setAddEmployeeLoading(false);
   };
 
   const removeEmployee = async (removeEmployee: IEmployee) => {
-    setLoading(true);
+    setRemoveEmployeeLoading(true);
     const { data, error } = await supabase
       .from<IEmployee>("Employees")
       .delete()
@@ -91,10 +101,10 @@ export const SchedulerProvider: FC<ISchedulerProvider> = (props) => {
         );
       });
     }
-    setLoading(false);
+    setRemoveEmployeeLoading(false);
   };
   const addTask = async (task: Omit<ITask, "id">) => {
-    setLoading(true);
+    setAddTaskLoading(true);
     const { data, error } = await supabase.from<ITask>("Tasks").insert(task);
     if (!error) {
       setTasks((prevTasks) => {
@@ -103,11 +113,11 @@ export const SchedulerProvider: FC<ISchedulerProvider> = (props) => {
         return clonePrevTasks;
       });
     }
-    setLoading(false);
+    setAddTaskLoading(false);
   };
 
   const removeTask = async (removeTask: ITask) => {
-    setLoading(true);
+    setRemoveTaskLoading(true);
     const { data, error } = await supabase
       .from("Tasks")
       .delete()
@@ -120,7 +130,7 @@ export const SchedulerProvider: FC<ISchedulerProvider> = (props) => {
         );
       });
     }
-    setLoading(false);
+    setRemoveTaskLoading(false);
   };
 
   return (
@@ -135,7 +145,10 @@ export const SchedulerProvider: FC<ISchedulerProvider> = (props) => {
         removeEmployee,
         addTask,
         removeTask,
-        loading,
+        addEmployeeLoading,
+        addTaskLoading,
+        removeEmployeeLoading,
+        removeTaskLoading,
       }}
     >
       {props.children}
