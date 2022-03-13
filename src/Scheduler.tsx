@@ -1,8 +1,13 @@
 import { Avatar, AvatarGroup, Button, Grid } from "@mui/material";
-import { useContext } from "react";
-import { BusinessDays, EmployeesComponent, SchedulerContext } from "Components";
-
+import { useContext, useState } from "react";
+import {
+  BusinessDays,
+  EmployeesComponent,
+  SchedulerContext,
+  AddEmployee,
+} from "Components";
 export const Scheduler = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const { weekType, setWeekType, employees } = useContext(SchedulerContext);
   const weekStateHandler = () => {
     if (weekType === "curr") {
@@ -11,13 +16,19 @@ export const Scheduler = () => {
       setWeekType("curr");
     }
   };
-
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+  const handleOpen = () => {
+    setIsOpen(true);
+  };
   return (
     <div
       style={{
         width: "100%",
       }}
     >
+      <AddEmployee isOpen={isOpen} handleClose={handleClose} />
       <Grid container>
         <Button onClick={weekStateHandler} variant="contained">
           {weekType === "curr" ? "next week" : "curr week"}
@@ -27,7 +38,9 @@ export const Scheduler = () => {
             <Avatar alt={employee.name}>{employee.name[0]}</Avatar>
           ))}
         </AvatarGroup>
-        <Button variant="contained">Add employee</Button>
+        <Button onClick={handleOpen} variant="contained">
+          Add employee
+        </Button>
       </Grid>
       <BusinessDays />
       <EmployeesComponent />
