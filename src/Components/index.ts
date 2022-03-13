@@ -4,3 +4,4 @@ export * from "./Employees";
 export * from "./SchedulerContext";
 export * from "./AddProject";
 export * from "./SettingsDialog";
+export * from "./Loader";

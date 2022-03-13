@@ -14,6 +14,7 @@ import { useContext, useState } from "react";
 import { SchedulerContext } from "Components/SchedulerContext";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+import { Loader } from "Components/Loader";
 interface ISettingsDialog {
   isOpen: boolean;
   handleClose: () => void;
@@ -26,14 +27,21 @@ export const SettingsDialog = (props: ISettingsDialog) => {
     setEmployeesName(e.target.value);
   };
 
-  const { employees, removeEmployee, addEmployee } =
-    useContext(SchedulerContext);
+  const {
+    employees,
+    removeEmployee,
+    addEmployee,
+    addEmployeeLoading,
+    removeEmployeeLoading,
+  } = useContext(SchedulerContext);
 
   const addEmployeeHandler = async () => {
-    await addEmployee({
-      name: employeesName,
-    });
-    setEmployeesName("");
+    if (!addEmployeeLoading && !removeEmployeeLoading && employeesName) {
+      await addEmployee({
+        name: employeesName,
+      });
+      setEmployeesName("");
+    }
   };
 
   const pressingEnter = async (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -63,7 +71,8 @@ export const SettingsDialog = (props: ISettingsDialog) => {
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ position: "relative" }}>
+        {(addEmployeeLoading || removeEmployeeLoading) && <Loader />}
         <Grid mt={2} container alignItems="center">
           <TextField
             onKeyPress={pressingEnter}
